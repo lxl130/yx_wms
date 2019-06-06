@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/yx_comm/yx_comm.iml" filepath="$PROJECT_DIR$/yx_comm/yx_comm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../yx_comm/yx_comm.iml" filepath="$PROJECT_DIR$/../yx_comm/yx_comm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/yx_model/yx_model.iml" filepath="$PROJECT_DIR$/yx_model/yx_model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../yx_model/yx_model.iml" filepath="$PROJECT_DIR$/../yx_model/yx_model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/yx_wms.iml" filepath="$PROJECT_DIR$/yx_wms.iml" />
+      <module fileurl="file://$PROJECT_DIR$/yx_wms_dao/yx_wms_dao.iml" filepath="$PROJECT_DIR$/yx_wms_dao/yx_wms_dao.iml" />
+      <module fileurl="file://$PROJECT_DIR$/yx_wms_service/yx_wms_service.iml" filepath="$PROJECT_DIR$/yx_wms_service/yx_wms_service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/yx_wms_web/yx_wms_web.iml" filepath="$PROJECT_DIR$/yx_wms_web/yx_wms_web.iml" />
+    </modules>
+  </component>
+</project>

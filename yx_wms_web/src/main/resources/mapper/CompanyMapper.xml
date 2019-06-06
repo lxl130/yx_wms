@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yx.wms_dao.Company.CompanyMapper">
+    <sql id="Base_Column_List">
+      c.companyId,c.companyCode,c.companyName,c.companyFullName,c.groupId,c.parentId,
+      c.createUser,c.createTime,c.updateUser,c.updateTime,c.validate
+    </sql>
+    <select id="GetMyCompanyList" resultType="com.yx.model.Company.Company" parameterType="java.util.HashMap">
+        SELECT g.companyName groupName,
+        <include refid="Base_Column_List"/>
+        FROM erp_company c
+        LEFT JOIN erp_company g ON c.groupId = g.companyId
+        WHERE c.validate='Y' AND c.groupId=#{groupId}
+    </select>
+    <select id="GetCompanyInfo" resultType="com.yx.model.Company.Company" parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM erp_company c
+        WHERE c.companyId=#{companyId}
+    </select>
+    <insert id="InsertCompany" parameterType="com.yx.model.Company.Company">
+        INSERT INTO erp_company (companyId,companyCode,companyName,companyFullName,parentId,groupId,
+        createUser,createTime,validate)
+        VALUES (#{companyId,jdbcType=VARCHAR}, #{companyCode,jdbcType=NVARCHAR}, #{companyName,jdbcType=NVARCHAR},
+          #{companyFullName,jdbcType=NVARCHAR}, #{parentId,jdbcType=NVARCHAR}, #{groupId,jdbcType=VARCHAR},
+          #{createUser,jdbcType=NVARCHAR}, now(), #{validate,jdbcType=NVARCHAR})
+    </insert>
+    <update id="UpdateCompany" parameterType="com.yx.model.Company.Company">
+        UPDATE erp_company SET
+        companyId=#{companyId,jdbcType=VARCHAR},
+        companyCode=#{companyCode,jdbcType=NVARCHAR},
+        companyName=#{companyName,jdbcType=NVARCHAR},
+        companyFullName=#{companyFullName,jdbcType=NVARCHAR},
+        parentId=#{parentId,jdbcType=NVARCHAR},
+        groupId=#{groupId,jdbcType=VARCHAR},
+        updateUser=#{updateUser,jdbcType=NVARCHAR},
+        validate=#{validate,jdbcType=NVARCHAR}
+        WHERE companyId=#{companyId}
+    </update>
+    <update id="UpdateDataValidate">
+        UPDATE erp_company SET
+        validate=#{validate}
+        WHERE companyId=#{companyId}
+    </update>
+</mapper>

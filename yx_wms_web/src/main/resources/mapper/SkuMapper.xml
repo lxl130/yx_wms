@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yx.wms_dao.Sku.SkuMapper">
+    <sql id="Base_Column_List">
+        skuId,s.customerId,s.groupId,skuNo,skuName,skuType,goodsNo,s.supplierId,shortName,englishName,skuProperty,
+        stockUnit,length,width,height,volume,grossWeight,netWeight,color,size,title,categoryId,categoryName,
+        pricingCategory,safetyStock,tagPrice,retailPrice,costPrice,purchasePrice,seasonCode,seasonName,
+        brandId,isSNMgmt,isShelfLifeMgmt,shelfLife,rejectLifecycle,lockupLifecycle,adventLifecycle,
+        isBatchMgmt,packCode,pcs,originAddress,approvalNumber,isFragile,isHazardous,s.validate,
+        packageMaterial,remark,s.createTime,s.updateTime
+    </sql>
+    <select id="GetSkuList" resultType="com.yx.model.Sku.Sku" parameterType="java.util.HashMap">
+        SELECT c.customerName,cs.supplierName,
+        <include refid="Base_Column_List"/>
+        FROM wms_sku s
+        LEFT JOIN erp_customer c ON s.customerId=c.customerId
+        LEFT JOIN erp_customer_supplier cs ON s.supplierId=cs.supplierId
+        WHERE s.validate='Y' AND s.groupId=#{groupId}
+        <if test="skuName!=null">AND s.skuName LIKE CONCAT('%',#{skuName},'%')</if>
+        <if test="skuId!=null">AND s.skuId LIKE CONCAT('%',#{skuId},'%')</if>
+        <if test="customerId!=null">AND s.customerId=#{customerId}</if>
+    </select>
+    <select id="GetSkuInfo" resultType="com.yx.model.Sku.Sku" parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM wms_sku st
+        WHERE st.stockId=#{stockId}
+    </select>
+    <insert id="InsertSku" parameterType="com.yx.model.Sku.Sku">
+        INSERT INTO wms_sku
+        (skuId,customerId,groupId,skuNo,skuName,skuType,goodsNo,supplierId,shortName,englishName,
+        skuProperty,stockUnit,length,width,height,volume,grossWeight,netWeight,color,size,title,
+        categoryId,categoryName,pricingCategory,safetyStock,tagPrice,retailPrice,costPrice,purchasePrice,
+        isSNMgmt,isShelfLifeMgmt,shelfLife,rejectLifecycle,lockupLifecycle,adventLifecycle,
+        isBatchMgmt,packCode,pcs,originAddress,approvalNumber,isFragile,isHazardous,
+        seasonCode,seasonName,brandId,packageMaterial,validate,remark,createTime)
+        VALUES
+        (#{skuId},#{customerId},#{groupId},#{skuNo},#{skuName},#{skuType},#{goodsNo},#{supplierId},#{shortName},#{englishName},
+        #{skuProperty},#{stockUnit},#{length},#{width},#{height},#{volume},#{grossWeight},#{netWeight},#{color},#{size},#{title},
+        #{categoryId},#{categoryName},#{pricingCategory},#{safetyStock},#{tagPrice},#{retailPrice},#{costPrice},#{purchasePrice},
+        #{isSNMgmt},#{isShelfLifeMgmt},#{shelfLife},#{rejectLifecycle},#{lockupLifecycle},#{adventLifecycle},
+        #{isBatchMgmt},#{packCode},#{pcs},#{originAddress},#{approvalNumber},#{isFragile},#{isHazardous},
+        #{seasonCode},#{seasonName},#{brandId},#{packageMaterial},#{validate},#{remark},now())
+    </insert>
+    <update id="UpdateSku" parameterType="com.yx.model.Sku.Sku">
+        UPDATE wms_sku SET
+        stockName=#{stockName},stockCode=#{stockCode},stockType=#{stockType},
+        groupId=#{groupId},companyId=#{companyId},customerCount=#{customerCount},
+        provinceId=#{provinceId},province=#{province},cityId=#{cityId},city=#{city},
+        areaId=#{areaId},area=#{area},detailAddress=#{detailAddress},zipCode=#{zipCode},
+        senderName=#{senderName},senderTelephone=#{senderTelephone},senderMobPhone=#{senderMobPhone},
+        senderEmail=#{senderEmail},updateUser=#{updateUser}
+        WHERE stockId=#{stockId}
+    </update>
+    <update id="UpdateDataValidate">
+        UPDATE wms_sku SET validate=#{validate} WHERE skuId=#{skuId}
+    </update>
+</mapper>

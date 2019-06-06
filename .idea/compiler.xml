@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="yx_comm" />
+        <module name="yx_model" />
+        <module name="yx_wms_dao" />
+        <module name="yx_wms_service" />
+        <module name="yx_wms_web" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="yx_comm" target="1.8" />
+      <module name="yx_model" target="1.8" />
+      <module name="yx_wms" target="1.8" />
+      <module name="yx_wms_dao" target="1.8" />
+      <module name="yx_wms_service" target="1.8" />
+      <module name="yx_wms_web" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

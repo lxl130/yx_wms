@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yx.wms_dao.DeliveryOrder.DeliveryOrderMapper">
+    <sql id="Base_Column_List">
+      deliveryOrderId,o.groupId,o.companyId,o.customerId,o.stockId,o.expressId,
+      deliveryOrderType,deliveryOrderStatus,deliveryOrderFlag,createType,
+      deliveryOrderNo,erpOrderNo,wmsOrderNo,platformId,platformName,
+      o.orderTime,buyTime,payTime,payNo,serviceCode,shopId,sellerNick,buyerNick,planTotalQty,sentTotalQty,
+      totalAmount,itemAmount,discountAmount,freight,sumWeight,arAmount,gotAmount,serviceFee,
+      expressNo,logisticsAreaCode,scheduleType,scheduleDay,scheduleStartTime,scheduleEndTime,
+      receiverCompany,receiverName,receiverZipCode,receiverTel,receiverMobile,receiverIdType,receiverIdNumber,
+      receiverEmail,receiverCountryCode,receiverProvinceId,receiverProvince,receiverCityId,receiverCity,
+      receiverAreaId,receiverArea,receiverTown,receiverAddress,
+      isUrgency,isSuspend,isCancel,isBooking,buyerMessage,sellerMessage,suspendRemark,cancelRemark,orderRemark,
+      deliveryTime,o.createTime,o.createUser,o.updateUser,o.updateTime,extendProp1,extendProp2,extendProp3
+    </sql>
+    <select id="GetDeliveryOrderList" resultType="com.yx.model.DeliveryOrder.DeliveryOrder" parameterType="java.util.HashMap">
+        SELECT com.companyName,cus.customerName,stk.stockName,e.expressName,
+        <include refid="Base_Column_List"/>
+        FROM wms_delivery_order o
+        LEFT JOIN erp_company com ON o.companyId=com.companyId
+        LEFT JOIN erp_customer cus ON o.customerId=cus.customerId
+        LEFT JOIN wms_stock stk ON o.stockId=stk.stockId
+        LEFT JOIN base_express e ON o.expressId=e.expressId
+        WHERE o.groupId=#{groupId}
+        <if test="customerId != null">AND o.customerId=#{customerId}</if>
+        <if test="companyId != null">AND o.companyId=#{companyId}</if>
+        <if test="stockId != null">AND o.stockId=#{stockId}</if>
+        <if test="shopId != null">AND o.shopId=#{shopId}</if>
+        <if test="expressId != null">AND o.expressId=#{expressId}</if>
+        <if test="platformId != null">AND o.platformId=#{platformId}</if>
+        <if test="receiverProvinceId != null">AND o.receiverProvinceId=#{receiverProvinceId}</if>
+        <if test="receiverCityId != null">AND o.receiverCityId=#{receiverCityId}</if>
+        <if test="receiverAreaId != null">AND o.receiverAreaId=#{receiverAreaId}</if>
+        <if test="deliveryOrderType != null">AND o.deliveryOrderType=#{deliveryOrderType}</if>
+        <if test="isUrgency != null">AND o.isUrgency=#{isUrgency}</if>
+        <if test="orderTime0 != null">AND o.orderTime &gt;= #{orderTime0}</if>
+        <if test="orderTime1 != null">AND o.orderTime &lt;= #{orderTime1}</if>
+        <if test="buyTime0 != null">AND o.buyTime &gt;= #{buyTime0}</if>
+        <if test="buyTime1 != null">AND o.buyTime &lt;= #{buyTime1}</if>
+        <if test="payTime0 != null">AND o.payTime &gt;= #{payTime0}</if>
+        <if test="payTime1 != null">AND o.payTime &lt;= #{payTime1}</if>
+        <if test="deliveryOrderId != null">AND deliveryOrderId LIKE CONCAT('%',#{deliveryOrderId},'%')</if>
+        <if test="deliveryOrderNo != null">AND deliveryOrderNo LIKE CONCAT('%',#{deliveryOrderNo},'%')</if>
+        <if test="erpOrderNo != null">AND erpOrderNo LIKE CONCAT('%',#{erpOrderNo},'%')</if>
+        <if test="wmsOrderNo != null">AND wmsOrderNo LIKE CONCAT('%',#{wmsOrderNo},'%')</if>
+        <if test="expressNo != null">AND expressNo LIKE CONCAT('%',#{expressNo},'%')</if>
+        <if test="buyerNick != null">AND buyerNick LIKE CONCAT('%',#{buyerNick},'%')</if>
+        <if test="sellerNick != null">AND sellerNick LIKE CONCAT('%',#{sellerNick},'%')</if>
+        <if test="receiverMobile != null">AND receiverMobile LIKE CONCAT('%',#{receiverMobile},'%')</if>
+    </select>
+    <select id="GetDeliveryOrderInfo" resultType="com.yx.model.DeliveryOrder.DeliveryOrder" parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM wms_delivery_order o
+        WHERE o.deliveryOrderId=#{deliveryOrderId}
+    </select>
+    <select id="GetDeliveryOrderItems" resultType="com.yx.model.DeliveryOrder.DeliveryOrderItem" parameterType="java.lang.String">
+        SELECT
+        deliveryOrderItemId,deliveryOrderId,orderLineNo,skuId,planQty,actualQty,retailPrice,actualPrice,grossWeight,comments
+        FROM wms_delivery_order_item
+        WHERE deliveryOrderId=#{deliveryOrderId}
+    </select>
+    <insert id="InsertDeliveryOrder" parameterType="com.yx.model.DeliveryOrder.DeliveryOrder">
+        INSERT INTO wms_delivery_order (
+        deliveryOrderId,groupId,companyId,customerId,stockId,expressId,
+        deliveryOrderType,deliveryOrderStatus,deliveryOrderFlag,createType,
+        deliveryOrderNo,erpOrderNo,wmsOrderNo,platformId,platformName,
+        orderTime,buyTime,payTime,payNo,serviceCode,shopId,sellerNick,buyerNick,planTotalQty,sentTotalQty,
+        totalAmount,itemAmount,discountAmount,freight,sumWeight,arAmount,gotAmount,serviceFee,
+        expressNo,logisticsAreaCode,scheduleType,scheduleDay,scheduleStartTime,scheduleEndTime,
+        receiverCompany,receiverName,receiverZipCode,receiverTel,receiverMobile,receiverIdType,receiverIdNumber,
+        receiverEmail,receiverCountryCode,receiverProvinceId,receiverProvince,receiverCityId,receiverCity,
+        receiverAreaId,receiverArea,receiverTown,receiverAddress,
+        isUrgency,isSuspend,isCancel,isBooking,buyerMessage,sellerMessage,suspendRemark,cancelRemark,orderRemark,
+        deliveryTime,createTime,createUser,extendProp1,extendProp2,extendProp3)
+        VALUES (#{deliveryOrderId},#{groupId},#{companyId},#{customerId},#{stockId},#{expressId},
+        #{deliveryOrderType},#{deliveryOrderStatus},#{deliveryOrderFlag},#{createType},
+        #{deliveryOrderNo},#{erpOrderNo},#{wmsOrderNo},#{platformId},#{platformName},
+        #{orderTime},#{buyTime},#{payTime},#{payNo},#{serviceCode},#{shopId},#{sellerNick},#{buyerNick},#{planTotalQty},#{sentTotalQty},
+        #{totalAmount},#{itemAmount},#{discountAmount},#{freight},#{sumWeight},#{arAmount},#{gotAmount},#{serviceFee},
+        #{expressNo},#{logisticsAreaCode},#{scheduleType},#{scheduleDay},#{scheduleStartTime},#{scheduleEndTime},
+        #{receiverCompany},#{receiverName},#{receiverZipCode},#{receiverTel},#{receiverMobile},#{receiverIdType},#{receiverIdNumber},
+        #{receiverEmail},#{receiverCountryCode},#{receiverProvinceId},#{receiverProvince},#{receiverCityId},#{receiverCity},
+        #{receiverAreaId},#{receiverArea},#{receiverTown},#{receiverAddress},
+        #{isUrgency},#{isSuspend},#{isCancel},#{isBooking},#{buyerMessage},#{sellerMessage},#{suspendRemark},#{cancelRemark},#{orderRemark},
+        #{deliveryTime},now(),#{createUser},#{extendProp1},#{extendProp2},#{extendProp3})
+    </insert>
+    <update id="UpdateDeliveryOrder" parameterType="com.yx.model.DeliveryOrder.DeliveryOrder">
+        UPDATE wms_delivery_order SET
+        customerId=#{customerId},stockId=#{stockId},expressId=#{expressId},deliveryOrderType=#{deliveryOrderType},
+        deliveryOrderStatus=#{deliveryOrderStatus},deliveryOrderFlag=#{deliveryOrderFlag},createType=#{createType},
+        deliveryOrderNo=#{deliveryOrderNo},erpOrderNo=#{erpOrderNo},wmsOrderNo=#{wmsOrderNo},platformId=#{platformId},
+        platformName=#{platformName},orderTime=#{orderTime},buyTime=#{buyTime},payTime=#{payTime},payNo=#{payNo},
+        serviceCode=#{serviceCode},shopId=#{shopId},sellerNick=#{sellerNick},buyerNick=#{buyerNick},planTotalQty=#{planTotalQty},
+        sentTotalQty=#{sentTotalQty},totalAmount=#{totalAmount},itemAmount=#{itemAmount},discountAmount=#{discountAmount},
+        freight=#{freight},sumWeight=#{sumWeight},arAmount=#{arAmount},gotAmount=#{gotAmount},serviceFee=#{serviceFee},
+        expressNo=#{expressNo},logisticsAreaCode=#{logisticsAreaCode},scheduleType=#{scheduleType},scheduleDay=#{scheduleDay},
+        scheduleStartTime=#{scheduleStartTime},scheduleEndTime=#{scheduleEndTime},receiverCompany=#{receiverCompany},
+        receiverName=#{receiverName},receiverZipCode=#{receiverZipCode},receiverTel=#{receiverTel},receiverMobile=#{receiverMobile},
+        receiverIdType=#{receiverIdType},receiverIdNumber=#{receiverIdNumber},receiverEmail=#{receiverEmail},
+        receiverCountryCode=#{receiverCountryCode},receiverProvinceId=#{receiverProvinceId},receiverProvince=#{receiverProvince},
+        receiverCityId=#{receiverCityId},receiverCity=#{receiverCity},receiverAreaId=#{receiverAreaId},receiverArea=#{receiverArea},
+        receiverTown=#{receiverTown},receiverAddress=#{receiverAddress},isUrgency=#{isUrgency},isSuspend=#{isSuspend},
+        isCancel=#{isCancel},isBooking=#{isBooking},buyerMessage=#{buyerMessage},sellerMessage=#{sellerMessage},
+        suspendRemark=#{suspendRemark},cancelRemark=#{cancelRemark},orderRemark=#{orderRemark},deliveryTime=#{deliveryTime},
+        updateUser=#{updateUser},extendProp1=#{extendProp1},extendProp2=#{extendProp2},extendProp3=#{extendProp3}
+        WHERE deliveryOrderId=#{deliveryOrderId}
+    </update>
+</mapper>

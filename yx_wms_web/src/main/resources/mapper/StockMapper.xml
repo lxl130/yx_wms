@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yx.wms_dao.Stock.StockMapper">
+    <sql id="Base_Column_List">
+      st.stockId,st.stockCode,st.stockName,st.stockType,st.groupId,st.companyId,st.customerCount,
+      st.provinceId,st.province,st.cityId,st.city,st.areaId,st.area,st.detailAddress,st.zipCode,
+      st.senderName,st.senderTelephone,st.senderMobPhone,st.senderEmail,
+      st.createTime,st.createUser,st.updateTime,st.updateUser,st.validate
+    </sql>
+    <select id="GetStockList" resultType="com.yx.model.Stock.Stock" parameterType="java.util.HashMap">
+        SELECT c.companyName,g.companyName groupName,
+        <include refid="Base_Column_List"/>
+        FROM wms_stock st
+        LEFT JOIN erp_company c ON st.companyId=c.companyId
+        LEFT JOIN erp_company g ON st.groupId=g.companyId
+        WHERE st.validate='Y' AND st.groupId=#{groupId}
+        <if test="stockName != null ">
+            AND st.stockName LIKE CONCAT('%',#{stockName},'%')
+        </if>
+        <if test="stockCode != null ">
+            AND st.stockCode LIKE CONCAT('%',#{stockCode},'%')
+        </if>
+        <if test="companyId != null ">
+            AND st.companyId = #{companyId}
+        </if>
+    </select>
+    <select id="GetStockInfo" resultType="com.yx.model.Stock.Stock" parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM wms_stock st
+        WHERE st.stockId=#{stockId}
+    </select>
+    <insert id="InsertStock" parameterType="com.yx.model.Stock.Stock">
+        INSERT INTO wms_stock (stockId,stockName,stockCode,stockType,groupId,companyId,customerCount,
+        provinceId,province,cityId,city,areaId,area,detailAddress,zipCode,senderName,
+        senderTelephone,senderMobPhone,senderEmail,createTime,createUser,validate)
+        VALUES (#{stockId},#{stockName},#{stockCode},#{stockType},#{groupId},#{companyId},0,
+        #{provinceId},#{province},#{cityId},#{city},#{areaId},#{area},#{detailAddress},#{zipCode},#{senderName},
+        #{senderTelephone},#{senderMobPhone},#{senderEmail},now(),#{createUser},#{validate})
+    </insert>
+    <update id="UpdateStock" parameterType="com.yx.model.Stock.Stock">
+        UPDATE wms_stock SET
+        stockName=#{stockName},stockCode=#{stockCode},stockType=#{stockType},
+        groupId=#{groupId},companyId=#{companyId},customerCount=#{customerCount},
+        provinceId=#{provinceId},province=#{province},cityId=#{cityId},city=#{city},
+        areaId=#{areaId},area=#{area},detailAddress=#{detailAddress},zipCode=#{zipCode},
+        senderName=#{senderName},senderTelephone=#{senderTelephone},senderMobPhone=#{senderMobPhone},
+        senderEmail=#{senderEmail},updateUser=#{updateUser}
+        WHERE stockId=#{stockId}
+    </update>
+    <update id="UpdateDataValidate">
+        UPDATE wms_stock SET
+        validate=#{validate}
+        WHERE stockId=#{stockId}
+    </update>
+    <select id="GetStockCustomerContactList" resultType="com.yx.model.Stock.StockCustomerContact" parameterType="java.lang.String">
+        SELECT cus.customerId,cus.customerName,IF(con.stockCustomerId IS NULL,FALSE,TRUE) AS isChecked
+        FROM erp_customer cus
+        LEFT JOIN wms_stock_customer con ON cus.customerId=con.customerId AND con.stockId=#{stockId}
+        WHERE cus.validate='Y' AND cus.groupId=#{groupId}
+        ORDER BY con.stockCustomerId DESC
+    </select>
+    <delete id="DeleteStockCustomerContact" parameterType="java.lang.String">
+        DELETE FROM wms_stock_customer
+        WHERE stockId=#{stockId}
+    </delete>
+    <insert id="InsertStockCustomerContact" parameterType="java.util.List">
+        INSERT INTO wms_stock_customer (stockCustomerId,companyId,stockId,customerId,createUser,createTime)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.stockCustomerId},
+            #{item.companyId},
+            #{item.stockId},
+            #{item.customerId},
+            #{item.createUser},
+            now()
+            )
+        </foreach>
+    </insert>
+    <update id="UpdateStockCustomerCount">
+        UPDATE wms_stock SET
+        customerCount=#{customerCount}
+        WHERE stockId=#{stockId}
+    </update>
+</mapper>

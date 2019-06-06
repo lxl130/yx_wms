@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yx.wms_dao.Base.SelectListMapper">
+    <select id="GetUserCompanySelectList" resultType="com.yx.model.Company.Company" parameterType="java.lang.String">
+        SELECT c.companyId,c.companyName
+        FROM erp_company c
+        WHERE c.validate='Y' AND c.groupId=#{groupId}
+    </select>
+    <select id="GetUserCustomerSelectList" resultType="com.yx.model.Company.Customer" parameterType="java.lang.String">
+        SELECT customerId,customerName
+        FROM erp_customer
+        WHERE validate='Y' AND groupId=#{groupId}
+    </select>
+    <select id="GetUserStockSelectList" resultType="com.yx.model.Stock.Stock" parameterType="java.lang.String">
+        SELECT stockId,stockName,companyId
+        FROM wms_stock
+        WHERE validate='Y' AND groupId=#{groupId}
+    </select>
+    <select id="GetExpressSelectList" resultType="com.yx.model.Stock.Express">
+        SELECT expressId,expressName FROM base_express
+    </select>
+    <select id="GetCustomerSupplierSelectList" resultType="com.yx.model.Company.Supplier" parameterType="java.lang.String">
+        SELECT supplierId,supplierName FROM erp_customer_supplier WHERE customerId=#{customerId}
+    </select>
+</mapper>

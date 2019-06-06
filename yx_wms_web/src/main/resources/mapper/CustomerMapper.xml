@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yx.wms_dao.Company.CustomerMapper">
+    <sql id="Base_Column_List">
+      cus.customerId,cus.customerCode,cus.customerName,cus.customerFullName,cus.groupId,
+      cus.createUser,cus.createTime,cus.updateUser,cus.updateTime,cus.validate
+    </sql>
+    <select id="GetCustomerList" resultType="com.yx.model.Company.Customer" parameterType="java.util.HashMap">
+        SELECT GROUP_CONCAT(DISTINCT com.companyName) companyNames,g.companyName groupName,u.realName createUserName,
+        <include refid="Base_Column_List"/>
+        FROM erp_customer cus
+        LEFT JOIN erp_company_contact con ON cus.customerId=con.customerId
+        LEFT JOIN erp_company com ON con.companyId=com.companyId
+        LEFT JOIN erp_company g ON cus.groupId=g.companyId
+        LEFT JOIN erp_user u ON u.userId=cus.createUser
+        WHERE cus.validate='Y' AND cus.groupId=#{groupId}
+        <if test="customerName!=null">AND cus.customerName LIKE CONCAT('%',#{customerName},'%')</if>
+        <if test="customerCode!=null">AND cus.customerCode LIKE CONCAT('%',#{customerCode},'%')</if>
+        <if test="customerId!=null">AND cus.customerId=#{customerId}</if>
+        GROUP BY cus.customerId
+    </select>
+    <select id="GetCustomerInfo" resultType="com.yx.model.Company.Customer" parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM erp_customer cus
+        WHERE cus.customerId=#{customerId}
+    </select>
+    <insert id="InsertCustomer" parameterType="com.yx.model.Company.Customer">
+        INSERT INTO erp_customer (customerId,customerCode,customerName,customerFullName,groupId,createUser,createTime)
+        VALUES (#{customerId},#{customerCode},#{customerName},#{customerFullName},#{groupId},#{createUser},now())
+    </insert>
+    <update id="UpdateCustomer" parameterType="com.yx.model.Company.Customer">
+        UPDATE erp_customer SET
+        customerId=#{customerId},
+        customerCode=#{customerCode},
+        customerName=#{customerName},
+        customerFullName=#{customerFullName},
+        groupId=#{groupId},
+        updateUser=#{updateUser}
+        WHERE customerId=#{customerId}
+    </update>
+    <update id="UpdateDataValidate">
+        UPDATE erp_customer SET
+        validate=#{validate}
+        WHERE customerId=#{customerId}
+    </update>
+    <select id="GetCompanyContactList" resultType="com.yx.model.Company.CompanyContact" parameterType="java.lang.String">
+        SELECT com.companyId,com.companyName,IF(con.contactId IS NULL,FALSE,TRUE) AS isChecked
+        FROM erp_company com
+        LEFT JOIN erp_company_contact con ON com.companyId=con.companyId AND con.customerId=#{customerId}
+        WHERE com.validate='Y' AND com.groupId=#{groupId}
+        ORDER BY con.contactId DESC
+    </select>
+    <delete id="DeleteCompanyContact" parameterType="java.lang.String">
+        DELETE FROM erp_company_contact
+        WHERE customerId=#{customerId}
+    </delete>
+    <insert id="InsertCompanyContact" parameterType="com.yx.model.Company.CompanyContact">
+        INSERT INTO erp_company_contact (contactId,companyId,customerId)
+        VALUES (#{contactId},#{companyId},#{customerId})
+    </insert>
+</mapper>

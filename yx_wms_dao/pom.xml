@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.yx</groupId>
+    <artifactId>yx_wms_dao</artifactId>
+    <version>${project.version}</version>
+    <name>yx_wms_dao</name>
+    <description>雨歇WMS DAO项目</description>
+
+    <parent>
+        <groupId>com.yx</groupId>
+        <artifactId>yx_wms</artifactId>
+        <version>0.0.1</version>
+        <relativePath/>
+    </parent>
+
+    <dependencies>
+        <!-- 公共类库 -->
+        <dependency>
+            <groupId>com.yx</groupId>
+            <artifactId>yx_model</artifactId>
+            <version>0.0.1</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.yx</groupId>
+            <artifactId>yx_comm</artifactId>
+            <version>0.0.1</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>3.5.0</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+</project>
